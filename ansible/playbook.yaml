@@ -12,12 +12,13 @@
         - git
         - python3
         - python3-pip
-        - python3-flask
-        - python3-boto3
-        - python3-pytest
-        - awscli
         - apache2
         - libapache2-mod-wsgi-py3
+
+    # Install Python dependencies from requirements.txt
+    - name: Install Python dependencies
+      pip:
+        requirements: /home/ubuntu/app/requirements.txt
 
     # Create a symbolic link for the Flask app
     - name: Create symbolic link for Flask app
@@ -42,6 +43,7 @@
               Order allow,deny
               Allow from all
           </Directory>
+     notify: Restart Apache service
 
   handlers:
     # Restart Apache service handler

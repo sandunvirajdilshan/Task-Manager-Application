@@ -175,6 +175,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         hideLoading()
                         showMessage(data.message, data.success === 'true');
                     }
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000);
 
                 })
             $('#deleteTaskModal').modal('hide');
