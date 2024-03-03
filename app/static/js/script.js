@@ -170,7 +170,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (data.success === 'true') {
                         hideLoading()
                         showMessage(data.message, data.success === 'true');
-                        fetchTasks();
                     } else {
                         hideLoading()
                         showMessage(data.message, data.success === 'true');
