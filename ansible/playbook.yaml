@@ -1,0 +1,52 @@
+---
+- hosts: host
+  become: true
+  tasks:
+    # Update system and install required packages
+    - name: Update system and install required packages
+      apt:
+        update_cache: yes
+        name:
+          - git
+          - python3
+          - python3-pip
+          - python3-flask
+          - python3-boto3
+          - python3-pytest
+          - awscli
+          - apache2
+          - libapache2-mod-wsgi-py3
+        state: present
+
+    # Create a symbolic link for the Flask app
+    - name: Create symbolic link for Flask app
+      file:
+        src: /home/ubuntu/app
+        dest: /var/www/html/app
+        state: link
+
+    # Add configurations to Apache configuration file
+    - name: Add configurations to Apache configuration file
+      blockinfile:
+        path: /etc/apache2/sites-enabled/000-default.conf
+        block: |
+          # WSGI Configuration for Flask Application
+          WSGIDaemonProcess app threads=5
+          WSGIScriptAlias / /var/www/html/app/app.wsgi
+
+          # Directory Configuration for Flask Application
+          <Directory /var/www/html/app>
+              WSGIProcessGroup app
+              WSGIApplicationGroup %{GLOBAL}
+              Order allow,deny
+              Allow from all
+          </Directory>
+        marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item }}"
+      notify: Restart Apache service
+
+  handlers:
+    # Restart Apache service handler
+    - name: Restart Apache service
+      service:
+        name: apache2
+        state: restarted

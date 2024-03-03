@@ -1,0 +1,73 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'pip3 install -r ./app/requirements.txt'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: 'aws_credentials',
+                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                    ]]) {
+                        sh 'python3 ./app/test_app.py'
+                    }
+                }
+            }
+        }
+
+        stage('Provisioning') {
+            steps {
+                script {
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: 'aws_credentials',
+                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                    ]]) {
+                        sh 'cd terraform && terraform init && terraform apply -auto-approve'
+                        echo 'Waiting for EC2 Instance to be running'
+                        sleep time: 30, unit: 'SECONDS'
+                        echo 'Done waiting!'
+                    }
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: 'aws_credentials',
+                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                    ]]) {
+                        def ec2_public_ip_with_quotes = sh(script: 'cd ./terraform && terraform output -json ec2_public_ip', returnStdout: true).trim()
+
+                        def ec2_public_ip = ec2_public_ip_with_quotes.replaceAll('"', '')
+
+                        sh "sed -i 's/<public_ip>/${ec2_public_ip}/g' ./ansible/inventory.ini"
+
+                        sh "rsync -avz -e 'ssh -i ./terraform/task_manager_app_key.pem -o StrictHostKeyChecking=no' './app' 'ubuntu@${ec2_public_ip}:/home/ubuntu/'"
+
+                        sh "ansible-playbook -i ./ansible/inventory.ini ./ansible/playbook.yaml"
+                    }
+                }
+            }
+        }
+    }
+}
