@@ -26,8 +26,9 @@ def test_get_tasks_route(client):
     assert response.status_code == 200
     assert b'true' in response.data
     tasks = response.json['tasks']
+    print(tasks)
     global test_task_id
-    test_task_id = tasks[0]['TaskId']
+    test_task_id = tasks[0][0]
 
 def test_edit_task_route(client):
     response = client.post('/edittask', data={

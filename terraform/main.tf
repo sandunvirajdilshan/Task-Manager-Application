@@ -118,24 +118,6 @@ resource "aws_instance" "task_manager_app" {
   }
 }
 
-// Create DynamoDB Table
-resource "aws_dynamodb_table" "Tasklist" {
-  name           = "Tasklist"
-  read_capacity  = 5
-  write_capacity = 5
-  hash_key       = "TaskId"
-
-  attribute {
-    name = "TaskId"
-    type = "S"
-  }
-
-  tags = {
-    Name = "Task List Table"
-  }
-
-
-}
 
 // Output the public IP address of the EC2 instance
 output "ec2_public_ip" {
