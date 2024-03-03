@@ -43,7 +43,7 @@
               Order allow,deny
               Allow from all
           </Directory>
-     notify: Restart Apache service
+      notify: Restart Apache service
 
   handlers:
     # Restart Apache service handler
