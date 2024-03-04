@@ -11,6 +11,8 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'pip3 install -r ./app/requirements.txt'
+                sh 'sudo apt install python3-pytest'
+                sh 'sudo apt install python3-flask'
             }
         }
 
