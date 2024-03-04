@@ -21,7 +21,6 @@
         src: /home/ubuntu/app
         dest: /var/www/html/app
         state: link
-        remote_src: yes
 
 
     # Add configurations to Apache configuration file
