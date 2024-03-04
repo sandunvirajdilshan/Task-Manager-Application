@@ -11,8 +11,6 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'pip3 install -r ./app/requirements.txt'
-                sh 'echo  | sudo -S apt install -y python3-pytest'
-                sh 'echo  | sudo -S apt install -y python3-flask'
             }
         }
 
