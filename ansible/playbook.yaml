@@ -17,11 +17,12 @@
 
     # Create a symbolic link for the Flask app
     - name: Create symbolic link for Flask app
-      copy:
+      file:
         src: /home/ubuntu/app
         dest: /var/www/html/app
         state: link
         remote_src: yes
+
 
     # Add configurations to Apache configuration file
     - name: Add configurations to Apache configuration file
