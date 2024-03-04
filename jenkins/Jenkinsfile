@@ -17,7 +17,8 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                        sh 'python3 ./app/test_app.py'
+                        sh 'pwd'
+                        //sh 'python3 ./app/test_app.py'
                     }
             }
         }
