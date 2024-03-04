@@ -38,9 +38,9 @@
 
     # Add configurations to Apache configuration file
     - name: Add configurations to Apache configuration file
-      blockinfile:
+      lineinfile:
         path: /etc/apache2/sites-enabled/000-default.conf
-        block: |
+        line: |
           # WSGI Configuration for Flask Application
           WSGIDaemonProcess app threads=5
           WSGIScriptAlias / /var/www/html/app/app.wsgi
@@ -52,6 +52,7 @@
               Order allow,deny
               Allow from all
           </Directory>
+        insertafter: 'DocumentRoot /var/www/html$'
       notify: Restart Apache service
 
   handlers:
