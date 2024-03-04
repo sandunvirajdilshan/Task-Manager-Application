@@ -1,11 +1,19 @@
+import os
 import sqlite3
 
+
+# Directory of the current script
+SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+
+
 # Database Path
-DATABASE_NAME = './db/tasks.db'
+DB_PATH = os.path.join(SCRIPT_DIR, '..', 'db', 'tasks.db')
+
 
 # Database Connection
 def get_connection():
-    return sqlite3.connect(DATABASE_NAME)
+    return sqlite3.connect(DB_PATH)
+
 
 # Create tasks Table
 def create_table():
@@ -39,6 +47,7 @@ def create_table():
         conn.close()
 # ------------------------------------------------------------------------------------
 
+
 # Add Task
 def add_task(data):
     conn = get_connection()
@@ -49,7 +58,8 @@ def add_task(data):
         INSERT INTO tasks (TaskName, TaskDescription, TaskDate, TaskTime)
         VALUES (?, ?, ?, ?)
         """
-        cursor.execute(insert_query, (data['taskName'], data['taskDescription'], data['taskDate'], data['taskTime']))
+        cursor.execute(
+            insert_query, (data['taskName'], data['taskDescription'], data['taskDate'], data['taskTime']))
         conn.commit()
 
         return {
@@ -66,6 +76,7 @@ def add_task(data):
         conn.close()
 # ------------------------------------------------------------------------------------
 
+
 # Edit Task
 def edit_task(data):
     conn = get_connection()
@@ -80,7 +91,8 @@ def edit_task(data):
             TaskTime = ?
         WHERE TaskId = ?
         """
-        cursor.execute(update_query, (data['taskName'], data['taskDescription'], data['taskDate'], data['taskTime'], data['taskId']))
+        cursor.execute(update_query, (data['taskName'], data['taskDescription'],
+                       data['taskDate'], data['taskTime'], data['taskId']))
         conn.commit()
 
         return {
@@ -143,9 +155,9 @@ def get_tasks():
 
         if not tasks:
             return {
-                    'success': 'false',
-                    'message': 'No Tasks Found!'
-                }
+                'success': 'false',
+                'message': 'No Tasks Found!'
+            }
 
         return {
             'success': 'true',
