@@ -1,39 +1,11 @@
 - hosts: host
   become: true
   tasks:
-    # System Update and package Installation
-    - name: Update system and install required packages
-      apt:
-        update_cache: yes
-        name: "{{ item }}"
-        state: present
-      loop:
-        - git
-        - python3
-        - python3-pip
-        - python3-flask
-        - python3-pytest
-        - apache2
-        - libapache2-mod-wsgi-py3
-
     # Move the app folder
     - name: Move app folder
       command: mv /home/ubuntu/app /var/www/html/
 
-    # Set permissions for database folder
-    - name: Set permissions for db directory
-      file:
-        path: /var/www/html/app/db
-        owner: www-data
-        group: www-data
-        recurse: yes
 
-    # Set permissions for the database
-    - name: Set permissions for db.sqlite3 file
-      file:
-        path: /var/www/html/app/db/db.sqlite3
-        owner: www-data
-        group: www-data
 
 
     # Add configurations to Apache configuration file

@@ -7,7 +7,7 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 # Database Path
-DB_PATH = os.path.join(SCRIPT_DIR, '..', 'db', 'tasks.db')
+DB_PATH = os.path.join(SCRIPT_DIR, '..', 'db', 'db.sqlite3')
 
 
 # Database Connection
