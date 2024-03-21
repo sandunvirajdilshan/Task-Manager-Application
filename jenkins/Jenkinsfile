@@ -8,9 +8,15 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Setup') {
             steps {
-                sh 'pip3 install -r ./app/requirements.txt'
+                sh "pip3 install -r ./app/requirements.txt"
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh "python3 ./app/test_app.py"
             }
         }
 
